@@ -1,0 +1,19 @@
+Starting: /pd/tjexp/blockinfo_mysql/app.js...
+  project started here: http://localhost:10010/
+  project will restart on changes.
+  to restart at any time, enter `rs`
+events.js:160
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE :::10010
+    at Object.exports._errnoException (util.js:1018:11)
+    at exports._exceptionWithHostPort (util.js:1041:20)
+    at Server._listen2 (net.js:1262:14)
+    at listen (net.js:1298:10)
+    at Server.listen (net.js:1394:5)
+    at Function.listen (/pd/tjexp/blockinfo_mysql/node_modules/connect/index.js:217:24)
+    at /pd/tjexp/blockinfo_mysql/app.js:18:7
+    at /pd/tjexp/blockinfo_mysql/node_modules/swagger-connect/lib/index.js:32:5
+    at /pd/tjexp/blockinfo_mysql/node_modules/swagger-node-runner/index.js:179:5
+    at /pd/tjexp/blockinfo_mysql/node_modules/swagger-tools/index.js:84:7

@@ -1,0 +1,5 @@
+
+> app@0.0.0 start /pd/tjexp/swaggerui
+> node ./bin/www
+
+Tue, 18 Apr 2017 09:22:01 GMT app:server Listening on port 8080
