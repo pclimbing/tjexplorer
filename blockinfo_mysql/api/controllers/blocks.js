@@ -59,7 +59,7 @@ function blocks(req, res) {
     console.log(rows)
     res.json(rows[rows.length-1].blocks);
 
-  );
+  });
   //onnection.end();
   // this sends back a JSON response which is a single string
   // res.json("9");
