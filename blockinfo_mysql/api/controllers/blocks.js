@@ -13,7 +13,7 @@
 var util = require('util');
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : '47.92.67.21',
+  host     : '127.0.0.1',
   user     : 'root',
   password : '123456',
   database : 'test'
@@ -53,14 +53,14 @@ function blocks(req, res) {
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  //onnection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
-  // if (err) throw err;
-  // //console.log('The solution is: ', rows[0].solution);
-  // console.log(rows)
-  // res.json(rows[rows.length-1].blocks);
+  onnection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
+    if (err) throw err;
+  //console.log('The solution is: ', rows[0].solution);
+    console.log(rows)
+    res.json(rows[rows.length-1].blocks);
 
-  //);
+  );
   //onnection.end();
   // this sends back a JSON response which is a single string
-  res.json("9");
+  // res.json("9");
 }
