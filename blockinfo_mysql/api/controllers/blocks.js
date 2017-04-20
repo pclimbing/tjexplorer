@@ -53,7 +53,7 @@ function blocks(req, res) {
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  onnection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
+  connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
     if (err) throw err;
   //console.log('The solution is: ', rows[0].solution);
     console.log(rows)
