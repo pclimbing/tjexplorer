@@ -57,7 +57,10 @@ function transactions(req, res) {
   connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
    if (err) throw err;
     console.log(rows)
-    res.json(rows[rows.length-1]);
+    res.json({
+      "tltalTrans": rows[rows.length-1].totalTrans,
+      "succeedTrans": rows[rows.length-1].succeedTrans
+    });
 
   });
   //connection.end();
