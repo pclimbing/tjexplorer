@@ -57,7 +57,11 @@ function blocks(req, res) {
     if (err) throw err;
   //console.log('The solution is: ', rows[0].solution);
     console.log(rows[0])
-    res.json(rows);
+	  for(var j = 0; j < rows.length; j++) {
+		     rows[j]= [rows[j].number, rows[j].previous_hash, rows[j].data_hash]
+	  } 
+    res.json(rows.join('|'));
+
 
   });
   //onnection.end();

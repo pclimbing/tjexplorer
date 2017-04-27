@@ -56,8 +56,10 @@ function transactions(req, res) {
   //connection.connect();
   connection.query('SELECT * from transactions', function(err, rows, fields) {
    if (err) throw err;
-    console.log(rows[0])
-    res.json({rows});
+             for(var j = 0; j < rows.length; j++) {
+		 rows[j]= [rows[j].tx_i_d, rows[j].type, rows[j].timestamp, rows[j].chaincode_name, rows[j].channel_name, rows[j].number]
+	     }
+	     res.json(rows.join('|'));
 
   });
   //connection.end();
