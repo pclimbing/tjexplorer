@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
   host     : '127.0.0.1',
   user     : 'root',
   password : '123456',
-  database : 'test'
+  database : 'test1'
 });
 // connection.connect();
 // connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {

@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
   host     : '127.0.0.1',
   user     : 'root',
   password : '123456',
-  database : 'test'
+  database : 'test1'
 });
 // connection.connect();
 // connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
@@ -56,7 +56,7 @@ function blocks(req, res) {
   connection.query('SELECT * from blocks', function(err, rows, fields) {
     if (err) throw err;
   //console.log('The solution is: ', rows[0].solution);
-    console.log(rows)
+    console.log(rows[0])
     res.json(rows);
 
   });
