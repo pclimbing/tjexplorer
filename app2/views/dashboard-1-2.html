@@ -21,6 +21,7 @@
 	<link rel="stylesheet" href="assets/css/custom.css">
 
 	<script src="assets/js/jquery-1.11.1.min.js"></script>
+	<script src="assets/js/echarts.min.js"></script>
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -141,92 +142,30 @@
 					   });
 					});
 
-					// Pageviews Visitors Chart
-					var i = 0,
-						line_chart_data_source = [
-						{ id: ++i, part1: 4, part2: 2 },
-						{ id: ++i, part1: 5, part2: 3 },
-						{ id: ++i, part1: 5, part2: 3 },
-						{ id: ++i, part1: 4, part2: 2 },
-						{ id: ++i, part1: 3, part2: 1 },
-						{ id: ++i, part1: 3, part2: 2 },
-						{ id: ++i, part1: 5, part2: 3 },
-						{ id: ++i, part1: 7, part2: 4 },
-						{ id: ++i, part1: 9, part2: 5 },
-						{ id: ++i, part1: 7, part2: 4 },
-						{ id: ++i, part1: 7, part2: 3 },
-						{ id: ++i, part1: 11, part2: 6 },
-						{ id: ++i, part1: 10, part2: 8 },
-						{ id: ++i, part1: 9, part2: 7 },
-						{ id: ++i, part1: 8, part2: 7 },
-						{ id: ++i, part1: 8, part2: 7 },
-						{ id: ++i, part1: 8, part2: 7 },
-						{ id: ++i, part1: 8, part2: 6 },
-						{ id: ++i, part1: 15, part2: 5 },
-						{ id: ++i, part1: 10, part2: 5 },
-						{ id: ++i, part1: 9, part2: 6 },
-						{ id: ++i, part1: 9, part2: 3 },
-						{ id: ++i, part1: 8, part2: 5 },
-						{ id: ++i, part1: 8, part2: 4 },
-						{ id: ++i, part1: 9, part2: 5 },
-						{ id: ++i, part1: 8, part2: 6 },
-						{ id: ++i, part1: 8, part2: 5 },
-						{ id: ++i, part1: 7, part2: 6 },
-						{ id: ++i, part1: 7, part2: 5 },
-						{ id: ++i, part1: 6, part2: 5 },
-						{ id: ++i, part1: 7, part2: 6 },
-						{ id: ++i, part1: 7, part2: 5 },
-						{ id: ++i, part1: 8, part2: 5 },
-						{ id: ++i, part1: 6, part2: 5 },
-						{ id: ++i, part1: 5, part2: 4 },
-						{ id: ++i, part1: 5, part2: 3 },
-						{ id: ++i, part1: 6, part2: 3 },
-					];
-					
-					$("#pageviews-visitors-chart").dxChart({
-						dataSource: line_chart_data_source,
-						commonSeriesSettings: {
-							argumentField: "id",
-							point: { visible: true, size: 5, hoverStyle: {size: 7, border: 0, color: 'inherit'} },
-							line: {width: 1, hoverStyle: {width: 1}}
-						},
-						series: [
-							{ valueField: "part1", name: "Transactions", color: "#68b828" },
-							{ valueField: "part2", name: "Succeed", color: "#eeeeee" },
-						],
-						legend: {
-							position: 'inside',
-							paddingLeftRight: 5
-						},
-						commonAxisSettings: {
-							label: {
-								visible: false
-							},
-							grid: {
-								visible: true,
-								color: '#f9f9f9'
-							}
-						},
-						valueAxis: {
-							max: 25
-						},
-						argumentAxis: {
-					        valueMarginsEnabled: false
-					    },
-					});
-							
+				    var myChart = echarts.init(document.getElementById('day-height-chart'));
 
-					
-					// Resize charts
-					$(window).on('xenon.resize', function()
-					{
-						$("#pageviews-visitors-chart").data("dxChart").render();
-				
+			        // 指定图表的配置项和数据
+			        var option = {
+			            title: {
+			                text: 'ECharts 入门示例'
+			            },
+			            tooltip: {},
+			            legend: {
+			                data:['销量']
+			            },
+			            xAxis: {
+			                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+			            },
+			            yAxis: {},
+			            series: [{
+			                name: '销量',
+			                type: 'bar',
+			                data: [5, 20, 36, 10, 10, 20]
+			            }]
+			        };
 
-					});
-					
-				});
-				
+			        // 使用刚指定的配置项和数据显示图表。
+			        myChart.setOption(option);
 
 
 			</script>
@@ -275,7 +214,7 @@
 							<div class="h3 text-secondary text-bold" data-count="this" data-from="0.00" data-to="14.85" data-suffix="%" data-duration="1">0.00%</div>
 							<span class="text-medium text-muted">More Transactions</span>
 						</div>
-						<div id="pageviews-visitors-chart" style="height: 298px;"></div>
+						<div id="day-height-chart" style="height: 298px;"></div>
 					</div>
 					
 				</div>

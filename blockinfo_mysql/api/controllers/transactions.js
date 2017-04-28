@@ -54,13 +54,10 @@ function transactions(req, res) {
   // this sends back a JSON response which is a single string
   // res.json(hello);
   //connection.connect();
-  connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
+  connection.query('SELECT * from transactions', function(err, rows, fields) {
    if (err) throw err;
     console.log(rows)
-    res.json({
-      "tltalTrans": rows[rows.length-1].totalTrans,
-      "succeedTrans": rows[rows.length-1].succeedTrans
-    });
+    res.json({rows});
 
   });
   //connection.end();
