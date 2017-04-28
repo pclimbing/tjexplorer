@@ -39,7 +39,7 @@ var connection = mysql.createConnection({
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  blocks: blocks
+  channels: channels
 };
 
 /*
@@ -48,12 +48,12 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function blocks(req, res) {
+function channels(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  connection.query('SELECT * from blocks', function(err, rows, fields) {
+  connection.query('SELECT * from channels', function(err, rows, fields) {
     if (err) throw err;
   //console.log('The solution is: ', rows[0].solution);
     console.log(rows)
