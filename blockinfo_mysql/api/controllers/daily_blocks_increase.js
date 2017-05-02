@@ -10,17 +10,17 @@
 
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
+var c=require('./config.js')
 var util = require('util');
 var mysql      = require('mysql');
+
+var connection = mysql.createConnection(c.mysql_path)
 // var connection = mysql.createConnection({
 //   host     : '127.0.0.1',
 //   user     : 'root',
 //   password : '123456',
 //   database : 'test1'
 // });
-
-var c=require('./config.js')
-var connection = mysql.createConnection(c.mysql_path)
 // connection.connect();
 // connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
 //   if (err) throw err;
@@ -28,6 +28,7 @@ var connection = mysql.createConnection(c.mysql_path)
 //   console.log(rows)
 // });
 // connection.end();
+
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
 
@@ -41,7 +42,7 @@ var connection = mysql.createConnection(c.mysql_path)
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  transactions: transactions
+  daily_blocks_increase : daily_blocks_increase
 };
 
 /*
@@ -50,27 +51,34 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function transactions(req, res) {
+function daily_blocks_increase(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  // var hello = util.format('transactions: 66');
-
-  // this sends back a JSON response which is a single string
-  // res.json(hello);
-  //connection.connect();
-  connection.query('SELECT * from transactions', function(err, rows, fields) {
+  // var name = req.swagger.params.name.value || 'stranger';
+  //var hello = util.format('Blocks: 9');
+  //onnection.connect();
+  connection.query('SELECT day , AVG(number) AS avgHeight FROM ( SELECT LEFT(timestamp,10) AS day, number AS number FROM transactions) as daytable',
+   function(err, rows, fields) {
       if (err) throw err;
     //console.log('The solution is: ', rows[0].solution);
-      console.log(rows[0])
+      //console.log(rows[0])
       for(var j = 0; j < rows.length; j++) {
-      var a = []
-      for(var x in rows[j]){
-        a.push(rows[j][x])
+        var a = []
+        for(var x in rows[j]){
+          a.push(rows[j][x])
+        }
+          rows[j]=a
       }
-      rows[j]=a
-      } 
-      res.json(rows.join('|'));
+
+      var b=[]
+      b[0] = rows[0]
+      for(var j = 1; j < rows.length; j++) {
+          b[j]=a[j] = a[j-1]
+      }
+
+      res.json(b.join('|'));
 
   });
-  //connection.end();
-  // res.json("66")
+  //onnection.end();
+  // this sends back a JSON response which is a single string
+  // res.json("9");
 }

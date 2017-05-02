@@ -57,12 +57,16 @@ function channels(req, res) {
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
   connection.query('SELECT * from channels', function(err, rows, fields) {
-    if (err) throw err;
-  //console.log('The solution is: ', rows[0].solution);
-    console.log(rows)
-	            for(var j = 0; j < rows.length; j++) {
-	   		    rows[j]= [rows[j].channel_name, rows[j].height, rows[j].current_block_hash, rows[j].previous_block_hash]
-	            }
+      if (err) throw err;
+    //console.log('The solution is: ', rows[0].solution);
+      console.log(rows[0])
+      for(var j = 0; j < rows.length; j++) {
+      var a = []
+      for(var x in rows[j]){
+        a.push(rows[j][x])
+      }
+      rows[j]=a
+      } 
       res.json(rows.join('|'));
 
   });

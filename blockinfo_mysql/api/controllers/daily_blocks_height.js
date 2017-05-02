@@ -62,11 +62,11 @@ function daily_blocks_height(req, res) {
     //console.log('The solution is: ', rows[0].solution);
       console.log(rows[0])
   	  for(var j = 0; j < rows.length; j++) {
-		  var a = []
-		  for(var x in rows[j]){
-			  a.push(rows[j][x])
-		  }
-  		rows[j]=a
+  		  var a = []
+  		  for(var x in rows[j]){
+  			  a.push(rows[j][x])
+  		  }
+    		rows[j]=a
   	  } 
       res.json(rows.join('|'));
 
