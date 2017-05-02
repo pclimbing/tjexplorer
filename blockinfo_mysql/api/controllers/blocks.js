@@ -12,12 +12,15 @@
  */
 var util = require('util');
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : '127.0.0.1',
-  user     : 'root',
-  password : '123456',
-  database : 'test1'
-});
+
+var c=require('./config.js')
+var connection = mysql.createConnection(c.mysql_path)
+// var connection = mysql.createConnection({
+//   host     : '127.0.0.1',
+//   user     : 'root',
+//   password : '123456',
+//   database : 'test1'
+// });
 // connection.connect();
 // connection.query('SELECT * from Blockinfo1', function(err, rows, fields) {
 //   if (err) throw err;

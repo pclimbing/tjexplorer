@@ -74,17 +74,17 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /daily_blocks_height:
     # binds a127 app logic to a route
-    x-swagger-router-controller: blocks_daily_height
+    x-swagger-router-controller: daily_blocks_height
     get:
       description: Returns 'transactions' to the caller
       # used as the method name of the controller
-      operationId: blocks_daily_height
+      operationId: daily_blocks_height
       responses:
         "200":
           description: Success
           schema:
             # a pointer to a definition
-            $ref: "#/definitions/TransactionsResponse"
+            $ref: "#/definitions/DailyBlockHeightResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -144,13 +144,13 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse" 
-  /trans_type_group:
+  /trans_groupby_type:
     # binds a127 app logic to a route
-    x-swagger-router-controller: trans_type_group
+    x-swagger-router-controller: trans_groupby_type
     get:
       description: Returns 'transactions' to the caller
       # used as the method name of the controller
-      operationId: trans_type_group
+      operationId: trans_groupby_type
       responses:
         "200":
           description: Success
@@ -167,6 +167,12 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  DailyBlockHeightResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
   ChannelsResponse:
     required:
       - message
