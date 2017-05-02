@@ -72,6 +72,97 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /daily_blocks_height:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: blocks_daily_height
+    get:
+      description: Returns 'transactions' to the caller
+      # used as the method name of the controller
+      operationId: blocks_daily_height
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TransactionsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /daily_blocks_increase:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: daily_blocks_increase
+    get:
+      description: Returns 'transactions' to the caller
+      # used as the method name of the controller
+      operationId: daily_blocks_increase
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TransactionsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"      
+  /daily_trans_num:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: daily_trans_num
+    get:
+      description: Returns 'transactions' to the caller
+      # used as the method name of the controller
+      operationId: daily_trans_num
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TransactionsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"      
+  /daily_trans_increase:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: daily_trans_increase
+    get:
+      description: Returns 'transactions' to the caller
+      # used as the method name of the controller
+      operationId: daily_trans_increase
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TransactionsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse" 
+  /trans_type_group:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: trans_type_group
+    get:
+      description: Returns 'transactions' to the caller
+      # used as the method name of the controller
+      operationId: trans_type_group
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/TransactionsResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse" 
+            
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
