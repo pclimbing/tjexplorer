@@ -56,7 +56,7 @@ function daily_trans_increase(req, res) {
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  connection.query('SELECT number, COUNT(*) FROM transactions group by number',
+  connection.query('SELECT day , count(*) FROM (SELECT LEFT(timestamp,10) AS day FROM transactions)  as daytable group by day',
    function(err, rows, fields) {
       if (err) throw err;
       //console.log('The solution is: ', rows[0].solution);
@@ -72,7 +72,7 @@ function daily_trans_increase(req, res) {
       var b =[]
       b[0] = rows[0]
       for(var j = 1; j < rows.length; j++) {
-        b[j] = [rows[j][0], rows[j][1] - rows[j][0]]
+        b[j] = [rows[j][0], rows[j][1] - rows[j-1][1]]
       }
 
       res.json(b.join('|'));
