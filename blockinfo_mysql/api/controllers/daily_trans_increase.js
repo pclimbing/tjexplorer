@@ -42,7 +42,7 @@ var connection = mysql.createConnection(c.mysql_path)
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  daily_blocks_increase : daily_blocks_increase
+  daily_trans_increase : daily_trans_increase
 };
 
 /*
@@ -51,12 +51,12 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function daily_blocks_increase(req, res) {
+function daily_trans_increase(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  connection.query('SELECT day , AVG(number) AS avgHeight FROM ( SELECT LEFT(timestamp,10) AS day, number AS number FROM transactions) as daytable group by day',
+  connection.query('SELECT number, COUNT(*) FROM transactions group by number',
    function(err, rows, fields) {
       if (err) throw err;
     //console.log('The solution is: ', rows[0].solution);
