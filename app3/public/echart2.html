@@ -10,9 +10,20 @@
 </head>
 <body>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="chart1" style="width: 600px;height:400px;"></div>
+    <div id="chart3" style="width: 1000px;height:400px;"></div>
+
+    <div id="chart1" style="width: 600px;height:400px;"></div>  
+
     <div id="chart2" style="width: 600px;height:400px;"></div>
-    <div id="chart3" style="width: 600px;height:400px;"></div>
+
+    <div id="chart4" style="width: 600px;height:400px;"></div>
+
+    <div id="chart5" style="width: 600px;height:400px;"></div>
+
+    <div id="chart6" style="width: 600px;height:400px;"></div>
+
+    <div id="chart7" style="width: 600px;height:400px;"></div>
+
 
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
@@ -21,6 +32,7 @@
         var myChart3 = echarts.init(document.getElementById('chart3'));
 
 
+        //chart 1, transactions group by type
         option1 = {
             title: {
                 text: '各类型交易数量'
@@ -32,13 +44,13 @@
                     type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
                 }
             },
-            dataZoom: [
-                {   // 这个dataZoom组件，默认控制x轴。
-                    type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
-                    start: 10,      // 左边在 10% 的位置。
-                    end: 60         // 右边在 60% 的位置。
-                }
-            ],
+            // dataZoom: [
+            //     {   // 这个dataZoom组件，默认控制x轴。
+            //         type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+            //         start: 10,      // 左边在 10% 的位置。
+            //         end: 60         // 右边在 60% 的位置。
+            //     }
+            // ],
             tooltip: {},
             // legend: {
             //     data:['销量']
@@ -57,36 +69,9 @@
 
 
         // myChart1.showLoading();
-        option2 = {
-            title: {
-                text: '每日平均区块高度'
-            },
-            color: ['#3398DB'],
-            tooltip : {
-                trigger: 'axis',
-                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                    type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
-                }
-            },
-            tooltip: {},
-            // legend: {
-            //     data:['销量']
-            // },
-            xAxis: {
-                data: []
-            },
-            yAxis: {},
-            series: [{
-                name: '日期',
-                type: 'bar',
-                data: []
-            }]
-        };
-        myChart2.setOption(option2)
-
-
         // myChart1.showLoading();
 
+        //get data and show
         jQuery(document).ready(function($)
         {   
             //the code to change text
@@ -114,9 +99,46 @@
                     }]
                 });
             })
+        })
+
+
+        //chart 2, daily blocks height 
+        option2 = {
+            title: {
+                text: '每日平均区块高度'
+            },
+            legend: {
+                data: ['bar'],
+                align: 'left'
+            },
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            tooltip: {},
+            // legend: {
+            //     data:['销量']
+            // },
+            xAxis: {
+                data: []
+            },
+            yAxis: {},
+            series: [{
+                name: '日期',
+                type: 'bar',
+                data: []
+            }]
+        };
+        myChart2.setOption(option2)
+
+        jQuery(document).ready(function($)
+        { 
            $.get("http://10.15.190.230:10010/daily_blocks_height",function(data,status){
                 // myChart1.hideLoading();
-                console.log(data)
+                // console.log(data)
                 var a = data.split('|')
                 var categories = []
                 var seriesdata = []
@@ -127,7 +149,200 @@
                     seriesdata.push(tmp[1])
                 }
 
-                myChart2.setOption({
+                option2 = {
+                    xAxis: {
+                        data: categories
+                    },
+                    series: [{
+                        // 根据名字对应到相应的系列
+                        name: '日期',
+                        data: seriesdata
+                    }]
+                };
+                myChart2.setOption(option2)
+       
+            })
+        })
+
+
+        //chart 3 , trans in blocks
+        jQuery(document).ready(function($)
+        { 
+            $.get("http://10.15.190.230:10010/trans_in_blocks",function(data,status){
+                // myChart1.hideLoading();
+                // console.log(data)
+                var a = data.split('|')
+                var xAxisData = [];
+                var data1 = [];
+
+                for(var j =0; j<a.length; j++){
+                    var tmp = a[j].split(',')
+                    // categories.push(tmp[0])
+                    // seriesdata.push(tmp[1])
+                    xAxisData.push('区块' + tmp[0]);
+                    data1.push(tmp[1]);
+                }
+
+                option3 = {
+                    title: {
+                        text: '区块中交易数'
+                    },
+                    legend: {
+                        data: ['bar'],
+                        align: 'left'
+                    },
+                    dataZoom: [
+                        {   // 这个dataZoom组件，默认控制x轴。
+                            type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+                            start: 0,      // 左边在 10% 的位置。
+                            end: 30         // 右边在 60% 的位置。
+                        }
+                    ],
+                    toolbox: {
+                        // y: 'bottom',
+                        feature: {
+                            magicType: {
+                                type: ['stack', 'tiled']
+                            },
+                            dataView: {},
+                            saveAsImage: {
+                                pixelRatio: 2
+                            }
+                        }
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        data: xAxisData,
+                        silent: false,
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    yAxis: {
+                    },
+                    series: [{
+                        name: 'bar',
+                        type: 'bar',
+                        data: data1,
+                        animationDelay: function (idx) {
+                            return idx * 10;
+                        }
+                    }],
+                    animationEasing: 'elasticOut',
+                    animationDelayUpdate: function (idx) {
+                        return idx * 5;
+                    }
+                };
+
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart3.setOption(option3);
+            })
+
+        }) // jquery end
+
+
+        //chart 4, daily blocks increase
+        var myChart4 = echarts.init(document.getElementById('chart4'));
+        option4 = {
+            title: {
+                text: '日区块高度增长'
+            },
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                data: []
+            },
+            yAxis: {},
+            series: [{
+                name: '日期',
+                type: 'bar',
+                data: []
+            }]
+        };
+        myChart4.setOption(option4)
+
+        jQuery(document).ready(function($)
+        {   
+            //the code to change text
+            // $.get("http://10.15.190.230:10010/blocks",function(datac,status){
+            $.get("http://10.15.190.230:10010/daily_blocks_increase",function(data,status){
+                // myChart1.hideLoading();
+                var a = data.split('|')
+                var categories = []
+                var seriesdata = []
+
+                for(var j =0; j<a.length; j++){
+                    var tmp = a[j].split(',')
+                    categories.push(tmp[0])
+                    seriesdata.push(tmp[1])
+                }
+
+                myChart4.setOption({
+                    xAxis: {
+                        data: categories
+                    },
+                    series: [{
+                        // 根据名字对应到相应的系列
+                        name: '交易类型',
+                        data: seriesdata
+                    }]
+                });
+            })
+        })
+
+        //chart 5, daily transaction num
+        var myChart5 = echarts.init(document.getElementById('chart5'));
+        option5 = {
+            title: {
+                text: '日交易数'
+            },
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            tooltip: {},
+            // legend: {
+            //     data:['销量']
+            // },
+            xAxis: {
+                data: []
+            },
+            yAxis: {},
+            series: [{
+                name: '日期',
+                type: 'bar',
+                data: []
+            }]
+        };
+        myChart5.setOption(option5)
+
+        jQuery(document).ready(function($)
+        {   
+            //the code to change text
+            // $.get("http://10.15.190.230:10010/blocks",function(datac,status){
+            $.get("http://10.15.190.230:10010/daily_trans_num",function(data,status){
+                // myChart1.hideLoading();
+                var a = data.split('|')
+                var categories = []
+                var seriesdata = []
+
+                for(var j =0; j<a.length; j++){
+                    var tmp = a[j].split(',')
+                    categories.push(tmp[0])
+                    seriesdata.push(tmp[1])
+                }
+
+                myChart5.setOption({
                     xAxis: {
                         data: categories
                     },
@@ -141,9 +356,63 @@
         })
 
 
+        //chart 6, daily transaction increase
+        var myChart6 = echarts.init(document.getElementById('chart6'));
+        option6 = {
+            title: {
+                text: '日交易增长'
+            },
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            tooltip: {},
+            // legend: {
+            //     data:['销量']
+            // },
+            xAxis: {
+                data: []
+            },
+            yAxis: {},
+            series: [{
+                name: '日期',
+                type: 'bar',
+                data: []
+            }]
+        };
+        myChart6.setOption(option6)
 
+        jQuery(document).ready(function($)
+        {   
+            //the code to change text
+            // $.get("http://10.15.190.230:10010/blocks",function(datac,status){
+            $.get("http://10.15.190.230:10010/daily_trans_increase",function(data,status){
+                // myChart1.hideLoading();
+                var a = data.split('|')
+                var categories = []
+                var seriesdata = []
 
+                for(var j =0; j<a.length; j++){
+                    var tmp = a[j].split(',')
+                    categories.push(tmp[0])
+                    seriesdata.push(tmp[1])
+                }
 
+                myChart6.setOption({
+                    xAxis: {
+                        data: categories
+                    },
+                    series: [{
+                        // 根据名字对应到相应的系列
+                        name: '日期',
+                        data: seriesdata
+                    }]
+                });
+            })
+        })
     </script>
 </body>
 </html>

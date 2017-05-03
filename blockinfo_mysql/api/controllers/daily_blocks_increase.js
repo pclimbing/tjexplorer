@@ -69,10 +69,11 @@ function daily_blocks_increase(req, res) {
           rows[j]=a
       }
 
+      console.log(a)
       var b=[]
       b[0] = rows[0]
       for(var j = 1; j < rows.length; j++) {
-          b[j]=a[j] = a[j-1]
+          b[j]=[rows[j][0], a[j] - a[j-1]]
       }
 
       res.json(b.join('|'));
