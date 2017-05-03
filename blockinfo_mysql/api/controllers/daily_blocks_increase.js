@@ -59,21 +59,20 @@ function daily_blocks_increase(req, res) {
   connection.query('SELECT day , AVG(number) AS avgHeight FROM ( SELECT LEFT(timestamp,10) AS day, number AS number FROM transactions) as daytable group by day',
    function(err, rows, fields) {
       if (err) throw err;
-    //console.log('The solution is: ', rows[0].solution);
-      //console.log(rows[0])
+      //console.log('The solution is: ', rows[0].solution);
+      // console.log(rows)
       for(var j = 0; j < rows.length; j++) {
         var a = []
         for(var x in rows[j]){
           a.push(rows[j][x])
         }
-          rows[j]=a
+        rows[j]=a
       }
 
-      console.log(a)
-      var b=[]
+      var b =[]
       b[0] = rows[0]
       for(var j = 1; j < rows.length; j++) {
-          b[j]=[rows[j][0], a[j] - a[j-1]]
+        b[j] = [rows[j][0], rows[j][1] - rows[j][0]]
       }
 
       res.json(b.join('|'));

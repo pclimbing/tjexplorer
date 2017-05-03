@@ -59,20 +59,20 @@ function daily_trans_increase(req, res) {
   connection.query('SELECT number, COUNT(*) FROM transactions group by number',
    function(err, rows, fields) {
       if (err) throw err;
-    //console.log('The solution is: ', rows[0].solution);
-      //console.log(rows[0])
+      //console.log('The solution is: ', rows[0].solution);
+      // console.log(rows)
       for(var j = 0; j < rows.length; j++) {
         var a = []
         for(var x in rows[j]){
           a.push(rows[j][x])
         }
-          rows[j]=a
+        rows[j]=a
       }
 
-      var b=[]
+      var b =[]
       b[0] = rows[0]
       for(var j = 1; j < rows.length; j++) {
-          b[j]=a[j] = a[j-1]
+        b[j] = [rows[j][0], rows[j][1] - rows[j][0]]
       }
 
       res.json(b.join('|'));
