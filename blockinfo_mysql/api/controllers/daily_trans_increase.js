@@ -56,7 +56,7 @@ function daily_trans_increase(req, res) {
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  connection.query('SELECT day , count(*) FROM (SELECT LEFT(timestamp,10) AS day FROM transactions)  as daytable group by day',
+  connection.query('SELECT day , count(*) FROM (SELECT tx_i_d, LEFT(timestamp,10) AS day FROM transactions)  as daytable group by day',
    function(err, rows, fields) {
       if (err) throw err;
       //console.log('The solution is: ', rows[0].solution);

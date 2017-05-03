@@ -60,7 +60,7 @@ function trans_in_blocks(req, res) {
    function(err, rows, fields) {
       if (err) throw err;
     //console.log('The solution is: ', rows[0].solution);
-      console.log(rows)
+      // console.log(rows)
       for(var j = 0; j < rows.length; j++) {
         var a = []
         for(var x in rows[j]){
