@@ -56,11 +56,11 @@ function daily_blocks_height(req, res) {
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  connection.query('SELECT day , AVG(number) AS avgHeight FROM ( SELECT LEFT(timestamp,10) AS day, number AS number FROM transactions) as daytable',
+  connection.query('SELECT day , AVG(number) AS avgHeight FROM ( SELECT LEFT(timestamp,10) AS day, number AS number FROM transactions) as daytable group by day',
    function(err, rows, fields) {
       if (err) throw err;
     //console.log('The solution is: ', rows[0].solution);
-      console.log(rows[0])
+      console.log(rows)
   	  for(var j = 0; j < rows.length; j++) {
   		  var a = []
   		  for(var x in rows[j]){
@@ -69,7 +69,6 @@ function daily_blocks_height(req, res) {
     		rows[j]=a
   	  } 
       res.json(rows.join('|'));
-
 
   });
   //onnection.end();
