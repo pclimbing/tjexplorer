@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="assets/echarts.min.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="chart1" style="width: 600px;height:400px;"></div>
+    <div id="chart2" style="width: 600px;height:400px;"></div>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart1 = echarts.init(document.getElementById('chart1'));
+        var myChart2 = echarts.init(document.getElementById('chart2'));
+
+
+
+
+
+        // 指定图表的配置项和数据
+var dataAxis = ['2017-4-1','2017-4-2','2017-4-3','2017-4-4','2017-4-5','2017-4-6','2017-4-7','2017-4-8','2017-4-9','2017-4-10'];
+var data = [220, 182, 191, 234, 290, 330, 310, 123, 442, 321];
+var yMax = 500;
+var dataShadow = [];
+
+for (var i = 0; i < data.length; i++) {
+    dataShadow.push(yMax);
+}
+
+option1 = {
+    title: {
+        text: '日平均区块高度'
+    },
+    xAxis: {
+        data: dataAxis,
+        axisLabel: {
+            inside: true,
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        axisTick: {
+            show: false
+        },
+        axisLine: {
+            show: false
+        },
+        z: 10
+    },
+    yAxis: {
+        axisLine: {
+            show: false
+        },
+        axisTick: {
+            show: false
+        },
+        axisLabel: {
+            textStyle: {
+                color: '#999'
+            }
+        }
+    },
+    dataZoom: [
+        {
+            type: 'inside'
+        }
+    ],
+    series: [
+        { // For shadow
+            type: 'bar',
+            itemStyle: {
+                normal: {color: 'rgba(0,0,0,0.05)'}
+            },
+            barGap:'-100%',
+            barCategoryGap:'40%',
+            data: dataShadow,
+            animation: false
+        },
+        {
+            type: 'bar',
+            itemStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(
+                        0, 0, 0, 1,
+                        [
+                            {offset: 0, color: '#83bff6'},
+                            {offset: 0.5, color: '#188df0'},
+                            {offset: 1, color: '#188df0'}
+                        ]
+                    )
+                },
+                emphasis: {
+                    color: new echarts.graphic.LinearGradient(
+                        0, 0, 0, 1,
+                        [
+                            {offset: 0, color: '#2378f7'},
+                            {offset: 0.7, color: '#2378f7'},
+                            {offset: 1, color: '#83bff6'}
+                        ]
+                    )
+                }
+            },
+            data: data
+        }
+    ]
+};
+
+// Enable data zoom when user click bar.
+var zoomSize = 6;
+myChart1.on('click', function (params) {
+    console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
+    myChart1.dispatchAction({
+        type: 'dataZoom',
+        startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
+        endValue: dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)]
+    });
+});
+myChart1.setOption(option1);
+
+
+
+
+
+
+var xAxisData = [];
+var data1 = [];
+var data2 = [];
+for (var i = 0; i < 100; i++) {
+    xAxisData.push('类目' + i);
+    data1.push((Math.sin(i / 5) * (i / 5 -10) + i / 6) * 5);
+    data2.push((Math.cos(i / 5) * (i / 5 -10) + i / 6) * 5);
+}
+
+option2 = {
+    title: {
+        text: '柱状图动画延迟'
+    },
+    legend: {
+        data: ['bar', 'bar2'],
+        align: 'left'
+    },
+    toolbox: {
+        // y: 'bottom',
+        feature: {
+            magicType: {
+                type: ['stack', 'tiled']
+            },
+            dataView: {},
+            saveAsImage: {
+                pixelRatio: 2
+            }
+        }
+    },
+    tooltip: {},
+    xAxis: {
+        data: xAxisData,
+        silent: false,
+        splitLine: {
+            show: false
+        }
+    },
+    yAxis: {
+    },
+    series: [{
+        name: 'bar',
+        type: 'bar',
+        data: data1,
+        animationDelay: function (idx) {
+            return idx * 10;
+        }
+    }, {
+        name: 'bar2',
+        type: 'bar',
+        data: data2,
+        animationDelay: function (idx) {
+            return idx * 10 + 100;
+        }
+    }],
+    animationEasing: 'elasticOut',
+    animationDelayUpdate: function (idx) {
+        return idx * 5;
+    }
+};
+
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart2.setOption(option2);
+
+    </script>
+</body>
+</html>

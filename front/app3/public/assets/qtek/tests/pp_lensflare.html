@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../thirdparty/require.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+</head>
+<body style="margin:0px">
+    <canvas id="main"></canvas>
+    <script type="text/javascript">
+        require(['qtek', 'js/createCompositor'], function(qtek, createCompositor) {
+            var renderer = new qtek.Renderer({
+                canvas : document.getElementById('main'),
+                devicePixelRatio : 1.0
+            });
+            renderer.resize(window.innerWidth, window.innerHeight);
+
+            var camera = new qtek.camera.Perspective({
+                aspect : renderer.getViewportAspect()
+            });
+            camera.position.set(0, 0, 20);
+
+            var scene = new qtek.Scene();
+            var control = new qtek.plugin.OrbitControl({
+                domElement : renderer.canvas,
+                target : camera
+            });
+
+            var cubeMap = new qtek.TextureCube({
+                width : 512,
+                height : 512,
+                type : qtek.Texture.FLOAT
+            });
+
+            qtek.util.texture.loadPanorama(
+                renderer,
+                'assets/textures/hdr/pisa.hdr',
+                cubeMap,
+                {
+                    exposure: 2
+                }
+            );
+
+            var skybox = new qtek.plugin.Skybox({
+                scene : scene
+            });
+            skybox.material.set('environmentMap', cubeMap);
+            skybox.material.shader.define('fragment', 'RGBM_ENCODE');
+
+            var animation = new qtek.animation.Animation();
+            animation.start();
+
+            var compositor = createCompositor({
+                scene: scene,
+                camera: camera
+            });
+
+            animation.on('frame', function() {
+                // renderer.render(scene, camera);
+                compositor.render(renderer);
+                control.update();
+            });
+        });
+
+    </script>
+</body>
+</html>

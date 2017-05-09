@@ -1,0 +1,31 @@
+{
+    "source": {
+        "include": ["src"],
+        "includePattern": ".+\\.js(doc)?$",
+        "exclude": ["src/dep/glmatrix.js"]
+    },
+    "opts": {
+        "template": "jsdoc-tmpl",
+        "encoding": "utf8",
+        "destination": "./doc/api/",
+        "recurse": true
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+        "applicationName": "QTEK",
+        "disqus": "",
+        "googleAnalytics": "",
+        "openGraph": {
+            "title": "",
+            "type": "website",
+            "image": "",
+            "site_name": "",
+            "url": ""
+        },
+        "meta": {
+            "title": "",
+            "description": "",
+            "keyword": ""
+        }
+    }
+}

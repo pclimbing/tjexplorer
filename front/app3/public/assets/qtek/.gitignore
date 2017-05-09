@@ -1,0 +1,8 @@
+node_modules
+qtek.todo
+gh-pages
+.DS_Store
+.idea
+cloc_definitions.txt
+tests/unit
+lib

@@ -1,0 +1,121 @@
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="../thirdparty/require.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+</head>
+<body style="margin:0px;">
+    <canvas id="main"></canvas>
+    <script type="text/javascript">
+        require(['qtek'], function(qtek){
+
+            var Shader = qtek.Shader;
+
+            var SIZE = 1024;
+
+            var renderer = new qtek.Renderer({
+                canvas : document.getElementById("main"),
+                devicePixelRatio: 1.0
+            });
+            renderer.resize(window.innerWidth, window.innerHeight);
+            var animation = new qtek.animation.Animation();
+            animation.start();
+
+            var fxLoader = new qtek.loader.FX();
+            fxLoader.load('assets/fx/curlnoise.json');
+            fxLoader.on('success', function(compositor) {
+                var time = new Date().getTime();
+                var elapsedTime = 0;
+                var spawnNode = compositor.getNodeByName('spawn');
+                var noiseNode = compositor.getNodeByName('noise');
+                var particleNode = compositor.getNodeByName('particle');
+
+                // Scene
+                var geo = new qtek.DynamicGeometry();
+                for (var i = 0; i < SIZE; i++) {
+                    for (var j = 0; j < SIZE; j++) {
+                        geo.attributes.position.value.push([i / SIZE, j / SIZE, 0]);
+                    }
+                }
+                var mat = new qtek.Material({
+                    shader : new qtek.Shader({
+                        vertex : Shader.source('curlnoise.vertex'),
+                        fragment : Shader.source('curlnoise.fragment')
+                    }),
+                    transparent : true,
+                    depthTest : false,
+                    blend : function(_gl){
+                        _gl.blendEquation(_gl.FUNC_ADD);
+                        _gl.blendFunc(_gl.SRC_ALPHA, _gl.ONE);
+                    }
+                });
+                var particleSystem = new qtek.Mesh({
+                    geometry : geo,
+                    material : mat,
+                    mode : qtek.Mesh.POINTS
+                });
+                var scene = new qtek.Scene();
+                scene.add(particleSystem);
+                var camera = new qtek.camera.Perspective({
+                    aspect : renderer.getViewportAspect()
+                });
+                camera.position.z = 0.3;
+                camera.position.y = 0.3;
+                camera.lookAt(scene.position);
+
+                var spiritTexture = new qtek.Texture2D();
+                spiritTexture.image = generateSprite();
+                mat.set("spiritTexture", spiritTexture);
+                mat.set("color", [0.0, 0.0, 0.0]);
+
+                var control = new qtek.plugin.OrbitControl({
+                    target : camera,
+                    domElement : renderer.canvas,
+                    sensitivity : 0.4
+                });
+
+                animation.on('frame', function () {
+                    control.update();
+                    var currentTime = new Date().getTime();
+                    var deltaTime = (currentTime - time) / 1000;
+                    elapsedTime += deltaTime;
+                    time = currentTime;
+
+                    spawnNode.setParameter("elapsedTime", elapsedTime);
+                    noiseNode.setParameter("elapsedTime", elapsedTime);
+                    particleNode.setParameter("deltaTime", deltaTime);
+                    compositor.render(renderer);
+
+                    mat.set("particleTexture", particleNode._outputTextures['position']);
+                    renderer.render(scene, camera);
+                });
+            });
+
+            function generateSprite(){
+                var canvas = document.createElement('canvas');
+                canvas.width = 128;
+                canvas.height = 128;
+
+                var context = canvas.getContext('2d');
+
+                context.beginPath();
+                context.arc(64, 64, 60, 0, Math.PI * 2, false) ;
+                context.closePath();
+
+                context.restore();
+
+                var gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+
+                gradient.addColorStop(0, 'rgba(255,255,255,1)');
+                gradient.addColorStop(1, 'rgba(255,255,255,0.0)');
+
+                context.fillStyle = gradient;
+
+                context.fill();
+                return canvas;
+            }
+        });
+    </script>
+</body>
+</html>

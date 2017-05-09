@@ -1,0 +1,132 @@
+\<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script type="text/javascript" src="../thirdparty/require.js"></script>
+        <script type="text/javascript" src="js/config.js"></script>
+
+        <script type="text/javascript" src="lib/stats.js"></script>
+        <script type="text/javascript" src="lib/dat.gui.js"></script>
+    </head>
+    <body style="margin:0px;">
+        <canvas id="main"></canvas>
+        <script>
+            require(['qtek', 'js/AlchemyAOPass'], function(qtek, AlchemyAOPass) {
+
+                var config = {
+                    kernelSize: 12,
+                    bias: 0.05,
+                    radius: 4,
+                    scale: 1,
+                    power: 1,
+                    epsilon: 0.0001
+                };
+
+                var gBuffer = new qtek.deferred.GBuffer();
+                var renderer = new qtek.Renderer({
+                    canvas: document.getElementById('main'),
+                    devicePixelRatio: 1.0
+                });
+                renderer.resize(window.innerWidth, window.innerHeight);
+                gBuffer.resize(renderer.getWidth(), renderer.getHeight());
+
+                var ssaoPass = new AlchemyAOPass({
+                    gBuffer: gBuffer
+                });
+
+                var camera = new qtek.camera.Perspective({
+                    far: 10000,
+                    aspect: renderer.getViewportAspect()
+                });
+
+                var scene = new qtek.Scene();
+
+                function randomInSquare(size) {
+                    return (Math.random() - 0.5) * size * 2;
+                }
+
+                var cubeGeo = new qtek.geometry.Cube();
+                for (var i = 0; i < 20; i ++) {
+                    for (var j = 0; j < 20; j ++) {
+                        var mesh = new qtek.Mesh({
+                            material: new qtek.Material({
+                                shader: qtek.shader.library.get('qtek.standard')
+                            }),
+                            geometry: cubeGeo
+                        });
+                        mesh.position.set(
+                            randomInSquare(20), randomInSquare(20), randomInSquare(20)
+                        );
+                        var scale = Math.random() * 5 + 5;
+                        mesh.scale.set(scale, scale, scale);
+                        scene.add(mesh);
+                    }
+                }
+                scene.add(new qtek.light.Ambient({
+                    intensity: 5
+                }));
+
+                camera.position.set(0, 80, 150);
+                camera.lookAt(scene.position);
+
+                var control = new qtek.plugin.OrbitControl({
+                    domElement: renderer.canvas,
+                    target: camera
+                });
+
+                var animation = new qtek.animation.Animation();
+
+                animation.on('frame', function (deltaTime) {
+                    control.update(deltaTime);
+                    stats.update();
+
+                    renderer.render(scene, camera);
+                    scene.update();
+                    camera.update();
+                    gBuffer.update(renderer, scene, camera);
+                    ssaoPass.render(renderer, camera);
+                });
+                animation.start();
+
+                var stats = new Stats();
+                stats.domElement.style.position = 'absolute';
+                stats.domElement.style.top = '0px';
+                stats.domElement.style.left = '0px';
+                document.body.appendChild(stats.domElement);
+
+                var gui = new dat.GUI();
+
+                var kernelCanvas = document.createElement('canvas');
+                kernelCanvas.width = kernelCanvas.height = 100;
+                var kernelCtx = kernelCanvas.getContext('2d');
+                kernelCanvas.style.cssText = 'position:absolute;left:0;bottom:0;z-index:100;';
+                document.body.appendChild(kernelCanvas);
+
+                function updateConfig() {
+                    for (var name in config) {
+                        ssaoPass.setParameter(name, config[name]);
+                    }
+                    kernelCtx.clearRect(0, 0, 100, 100);
+                    var kernel = ssaoPass._ssaoPass.getUniform('kernel');
+
+                    kernelCtx.beginPath();
+                    for (var i = 0; i < kernel.length;) {
+                        var x = kernel[i++];
+                        var y = kernel[i++];
+                        kernelCtx.rect(x * 50 + 50, y * 50 + 50, 2, 2);
+                    }
+                    kernelCtx.fill();
+                }
+
+                gui.add(config, 'kernelSize', 4, 128).step(1).onChange(updateConfig);
+                gui.add(config, 'radius', 0, 10).onChange(updateConfig);
+                gui.add(config, 'scale', 0, 2).onChange(updateConfig);
+                gui.add(config, 'power', 0.1, 6).onChange(updateConfig);
+                gui.add(config, 'bias').onChange(updateConfig);
+                gui.add(config, 'epsilon').onChange(updateConfig);
+
+                updateConfig();
+            });
+        </script>
+    </body>
+</html>

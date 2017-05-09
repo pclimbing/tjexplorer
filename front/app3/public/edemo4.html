@@ -1,0 +1,47 @@
+<body>
+    <div id="main"></div>
+    <!-- 必须要先引入 ECharts 主文件 -->
+        <script src="assets/require.js"></script>
+    <script src="assets/echarts/src/echarts.js"></script>
+
+
+    <script type="text/javascript">
+        // 配置后续加载的各种 chart 配置 config
+            require.config({
+                packages: [{
+                    name: 'echarts',
+                    location: 'assets/echarts/src',
+                    main: 'echarts'
+                }, {
+                    name: 'zrender',
+                    location: 'assets/zrender/src',
+                    main: 'zrender'
+                }, {
+                    name: 'qtek',
+                    location: 'assets/qtek/src',
+                    // 这里需要是 qtek.amd, 如果是 qtek 会
+                    // 引入所有 qtek 的模块，会导致项目体积过大
+                    main: 'qtek.amd'
+                }, {
+                    name: 'echarts-x',
+                    location: 'assets/echarts-x/src',
+                    main: 'echarts-x'
+                }]
+            })
+
+            // 跟 ECharts 一样的方式初始化
+            var chart = echarts.init(document.getElementById('main'));
+
+            chart.setOption({
+                title: {
+                    text: 'A Simple Example'
+                },
+                series: [{
+                    type: 'map3d',
+                    // Empty data
+                    data: [{}]
+                }]
+            })
+        
+    </script>
+</body>

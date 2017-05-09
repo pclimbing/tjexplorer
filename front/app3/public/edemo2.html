@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="assets/echarts.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="assets/DataTables-1.10.13/media/js/jquery.js"></script>
+
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <!-- <div id="chart3" style="width: 1000px;height:400px;"></div> -->
+
+    <div id="chart1" style="width: 600px;height:400px;"></div>  
+
+    <div id="chart2" style="width: 600px;height:400px;"></div>
+    <div id="chart3" style="width: 600px;height:400px;"></div>
+    <div id="chart4" style="width: 600px;height:400px;"></div>
+
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart1 = echarts.init(document.getElementById('chart1'));
+        var myChart2 = echarts.init(document.getElementById('chart2'));
+        var myChart3 = echarts.init(document.getElementById('chart3'));
+        var myChart4 = echarts.init(document.getElementById('chart4'));
+
+
+        //chart 1, transactions group by type
+        option1 = {
+            title: {
+                text: '一天用电量分布',
+                subtext: '纯属虚构'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis:  {
+                type: 'category',
+                boundaryGap: false,
+                data: ['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} W'
+                },
+                axisPointer: {
+                    snap: true
+                }
+            },
+            visualMap: {
+                show: false,
+                dimension: 0,
+                pieces: [{
+                    lte: 6,
+                    color: 'green'
+                }, {
+                    gt: 6,
+                    lte: 8,
+                    color: 'red'
+                }, {
+                    gt: 8,
+                    lte: 14,
+                    color: 'green'
+                }, {
+                    gt: 14,
+                    lte: 17,
+                    color: 'red'
+                }, {
+                    gt: 17,
+                    color: 'green'
+                }]
+            },
+            series: [
+                {
+                    name:'用电量',
+                    type:'line',
+                    smooth: true,
+                    data: [300, 280, 250, 260, 270, 300, 550, 500, 400, 390, 380, 390, 400, 500, 600, 750, 800, 700, 600, 400],
+                    markArea: {
+                        data: [ [{
+                            name: '早高峰',
+                            xAxis: '07:30'
+                        }, {
+                            xAxis: '10:00'
+                        }], [{
+                            name: '晚高峰',
+                            xAxis: '17:30'
+                        }, {
+                            xAxis: '21:15'
+                        }] ]
+                    }
+                }
+            ]
+        };
+        myChart1.setOption(option1)
+
+
+        jQuery(document).ready(function($)
+        {   
+            //the code to change text
+            // $.get("http://10.15.190.230:10010/blocks",function(datac,status){
+            $.get("http://10.15.190.230:10010/trans_groupby_type",function(data,status){
+
+            })
+        })
+
+
+        //chart 2, daily blocks height 
+ option2 = {
+    title: {
+        text: '动态数据',
+        subtext: '纯属虚构'
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross',
+            label: {
+                backgroundColor: '#283b56'
+            }
+        }
+    },
+    legend: {
+        data:['最新成交价', '预购队列']
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            dataView: {readOnly: false},
+            restore: {},
+            saveAsImage: {}
+        }
+    },
+    dataZoom: {
+        show: false,
+        start: 0,
+        end: 100
+    },
+    xAxis: [
+        {
+            type: 'category',
+            boundaryGap: true,
+            data: (function (){
+                var now = new Date();
+                var res = [];
+                var len = 10;
+                while (len--) {
+                    res.unshift(now.toLocaleTimeString().replace(/^\D*/,''));
+                    now = new Date(now - 2000);
+                }
+                return res;
+            })()
+        },
+        {
+            type: 'category',
+            boundaryGap: true,
+            data: (function (){
+                var res = [];
+                var len = 10;
+                while (len--) {
+                    res.push(len + 1);
+                }
+                return res;
+            })()
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            scale: true,
+            name: '价格',
+            max: 30,
+            min: 0,
+            boundaryGap: [0.2, 0.2]
+        },
+        {
+            type: 'value',
+            scale: true,
+            name: '预购量',
+            max: 1200,
+            min: 0,
+            boundaryGap: [0.2, 0.2]
+        }
+    ],
+    series: [
+        {
+            name:'预购队列',
+            type:'bar',
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            data:(function (){
+                var res = [];
+                var len = 10;
+                while (len--) {
+                    res.push(Math.round(Math.random() * 1000));
+                }
+                return res;
+            })()
+        },
+        {
+            name:'最新成交价',
+            type:'line',
+            data:(function (){
+                var res = [];
+                var len = 0;
+                while (len < 10) {
+                    res.push((Math.random()*10 + 5).toFixed(1) - 0);
+                    len++;
+                }
+                return res;
+            })()
+        }
+    ]
+};
+    myChart2.setOption(option2);
+
+var count = 11;
+setInterval(function (){
+    axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+
+    var data0 = option2.series[0].data;
+    var data1 = option2.series[1].data;
+    data0.shift();
+    data0.push(Math.round(Math.random() * 1000));
+    data1.shift();
+    data1.push((Math.random() * 10 + 5).toFixed(1) - 0);
+
+    option2.xAxis[0].data.shift();
+    option2.xAxis[0].data.push(axisData);
+    option2.xAxis[1].data.shift();
+    option2.xAxis[1].data.push(count++);
+
+    myChart2.setOption(option2);
+}, 2100);
+
+        jQuery(document).ready(function($)
+        { 
+           $.get("http://10.15.190.230:10010/daily_blocks_height",function(data,status){
+          
+                // var a = data.split('|')
+                // var categories = []
+                // var seriesdata = []
+
+                // for(var j =0; j<a.length; j++){
+                //     var tmp = a[j].split(',')
+                //     categories.push(tmp[0])
+                //     seriesdata.push(tmp[1])
+                // }
+
+                // option2 = {
+                //     xAxis: {
+                //         data: categories
+                //     },
+                //     series: [{
+                //         // 根据名字对应到相应的系列
+                //         name: '日期',
+                //         data: seriesdata
+                //     }]
+                // };
+                // myChart2.setOption(option2)
+       
+            })
+        })
+
+
+
+
+//chat 3
+option3 = {
+    title: {
+        text: 'Graph 简单示例'
+    },
+    tooltip: {},
+    animationDurationUpdate: 1500,
+    animationEasingUpdate: 'quinticInOut',
+    series : [
+        {
+            type: 'graph',
+            layout: 'none',
+            symbolSize: 50,
+            roam: true,
+            label: {
+                normal: {
+                    show: true
+                }
+            },
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [4, 10],
+            edgeLabel: {
+                normal: {
+                    textStyle: {
+                        fontSize: 20
+                    }
+                }
+            },
+            data: [{
+                name: '节点1',
+                x: 300,
+                y: 300
+            }, {
+                name: '节点2',
+                x: 800,
+                y: 300
+            }, {
+                name: '节点3',
+                x: 550,
+                y: 100
+            }, {
+                name: '节点4',
+                x: 550,
+                y: 500
+            }],
+            // links: [],
+            links: [{
+                source: 0,
+                target: 1,
+                symbolSize: [5, 20],
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                lineStyle: {
+                    normal: {
+                        width: 5,
+                        curveness: 0.2
+                    }
+                }
+            }, {
+                source: '节点2',
+                target: '节点1',
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                lineStyle: {
+                    normal: { curveness: 0.2 }
+                }
+            }, {
+                source: '节点1',
+                target: '节点3'
+            }, {
+                source: '节点2',
+                target: '节点3'
+            }, {
+                source: '节点2',
+                target: '节点4'
+            }, {
+                source: '节点1',
+                target: '节点4'
+            }],
+            lineStyle: {
+                normal: {
+                    opacity: 0.9,
+                    width: 2,
+                    curveness: 0
+                }
+            }
+        }
+    ]
+};
+        myChart3.setOption(option3)
+
+
+
+// cahrt 4
+var dataBeast=[660, 841, 521, 820, 578, 727, 598, 792, 701, 660, 729, 782, 660, 841, 541, 513, 792, 701, 660, 729, 782, 660, 841, 521, 820, 578, 727, 598];
+var dataBeauty=[541, 513, 792, 701, 660, 729, 782, 660, 841, 521, 820, 578, 727, 598, 660, 841, 521, 820, 578, 727, 598, 792, 701, 660, 729, 513, 792, 701];
+var xAxisData=['奥伦达部落','皇后镇休闲度假村','顶秀美泉小镇','印象山庄','普拉托休闲小镇','爱斐堡国际酒庄','古北水镇','青龙峡','云蒙山','雁栖湖','黄花城','云蒙山','黑龙潭','白河大峡谷','奥伦达部落','皇后镇休闲度假村','顶秀美泉小镇','印象山庄','普拉托休闲小镇','爱斐堡国际酒庄','古北水镇','青龙峡','云蒙山','雁栖湖','黄花城','云蒙山','黑龙潭','白河大峡谷'];
+var dataTotal=function(){
+    var data=[];
+    for(var i=0;i<dataBeauty.length;i++){
+        data.push(dataBeauty[i]+dataBeast[i]);
+    }
+    
+    return data;
+}
+
+console.log(dataTotal());
+
+option4 = {
+    color:['#019aba','#7a201f','#11565d'],
+    backgroundColor:'#000',
+    title: {
+        text: '北京各春游景点人数统计',
+        textStyle: {
+            color:'#fff',
+            fontSize:18,
+            fontWeight:'bold',
+            
+        },
+        subtext:'作者:花自飘凌水自流',
+        subtextStyle: {
+            color:'#ddd',
+        },
+    },
+    legend:{
+        right:'20%',
+        textStyle: {
+            color: '#666',
+            fontSize: 12,
+        },
+        data:['帅哥','美女','总人数'],
+        
+        // 自定义legend图标
+        // data: [
+        //     {
+        //         name: '帅哥',
+        //         icon: 'image://url',
+        //         textStyle: {
+        //             color: 'red'
+        //         }
+        //     },
+        //     {
+        //         name: '美女',
+        //         icon: 'image://url',
+        //         textStyle: {
+        //             color: 'red'
+        //         }
+        //     },
+        //     {
+        //         name: '总人数',
+        //         icon: 'image://url',
+        //         textStyle: {
+        //             color: 'red'
+        //         }
+        //     },
+        // ]
+    },
+    tooltip:{
+        show:true,
+        trigger: 'axis',
+        axisPointer: {
+            type:'shadow',
+            textStyle: {
+                color: '#fff',
+            }
+
+        },
+    },
+    toolbox:{
+        show:true,
+        feature: {
+            saveAsImage: {
+                show:true,
+            },
+            restore: {
+                show:true,
+            },
+            dataView: {
+                show:true,
+            },
+            dataZoom: {
+                show:true,
+            },
+            magicType: {
+                show:true,
+            },
+            // brush: {
+            //     show:true,
+            // },
+        },
+    },
+    grid:{
+        left:5,
+        right:20,
+        top:80,
+        bottom:50,
+        containLabel:true,
+    },
+    xAxis: {
+      show:true,
+      
+      axisLabel:{
+         interval:0,
+         rotate:-20,
+         margin: 30,
+         textStyle:{
+              color:'#ddd',
+              align: 'center'
+             
+         },
+      },
+      axisTick:{
+          alignWithLabel:true,
+          lineStyle:{
+              color:'#ddd',
+              
+          },
+      },
+      data:xAxisData,
+    },
+    yAxis: [
+        {
+            type:'value',
+            name:'(人/次)',
+            nameTextStyle:{
+                color:'#ddd',
+            },
+            axisLabel:{
+             textStyle:{
+                  color:'#ddd',
+             },
+            },
+            axisTick:{
+              alignWithLabel:true,
+              lineStyle:{
+                  color:'#ddd',
+                  
+              },
+            },
+            splitLine:{
+                show:false,
+            },
+        },
+        {
+            type:'value',
+            name:'总人次',
+            nameTextStyle:{
+                color:'#ddd',
+            },
+            axisLabel:{
+             textStyle:{
+                  color:'#ddd',
+             },
+            },
+            axisTick:{
+              alignWithLabel:true,
+              lineStyle:{
+                  color:'#ddd',
+                  
+              },
+            },
+            splitLine:{
+                show:false,
+            },
+        },
+    ],
+    dataZoom: [{
+        show: true,
+        height:20,
+        bottom:10,
+        start: 10,
+        end: 60,
+        handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+        handleSize: '110%',
+        handleStyle:{color:"#d3dee5",},
+        textStyle:{color:"#fff"}, 
+            borderColor:"#90979c",
+        }, 
+        { type: "inside"}
+    ],
+    series: [
+        {
+            type: 'bar',
+            name:'帅哥',
+            stack:'游客人数',
+            data:dataBeast,
+            label: {
+                normal: {
+                    show:true,
+                    position: 'insideTop',
+                    offset:[0,20],
+                    textStyle:{
+                       color:'#000',
+                    },
+                },
+                emphasis: {
+                     textStyle:{
+                       color:'#fff',
+                    }, 
+                },
+            },
+        },
+        {
+            type: 'bar',
+            name:'美女',
+            stack:'游客人数',
+            data:dataBeauty,
+            label: {
+                normal: {
+                    show:true,
+                    position: 'insideTop',
+                    offset:[0,20],
+                    textStyle:{
+                       color:'#000',
+                    },
+                },
+                emphasis: {
+                   textStyle:{
+                       color:'#fff',
+                    }, 
+                },
+            },
+        },
+        {
+            type: 'line',
+            name:'总人数',
+            yAxisIndex:1,
+            stack:'游客人数',
+            data:dataTotal(),
+            label: {
+                normal: {
+                    show:true,
+                    position: 'insideTop',
+                    offset: [0,-30],
+                     textStyle:{
+                       color:'#666',
+                    }, 
+                },
+                emphasis: {
+                    textStyle:{
+                       color:'#fff',
+                    },  
+                },
+            },
+            // symbol:'image://../imgs/point1.png',
+            symbolSize:8,
+            itemStyle: {
+                    normal: {
+                        // "color": "#01B3D7",
+                        barBorderRadius: 0,
+                        label: {
+                            show:false,
+                            position: "top",
+                            formatter: function(p) {
+                                return p.value > 0 ? (p.value) : '';
+                            }
+                        }
+                    }
+                },
+            lineStyle: {
+                    normal: {
+                    color: '#01B3D7',
+                    width: 1,
+                
+                    },
+                },
+        },
+    ]
+};
+
+        myChart4.setOption(option4)
+
+    </script>
+</body>
+</html>

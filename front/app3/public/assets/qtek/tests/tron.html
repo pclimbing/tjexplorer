@@ -1,0 +1,128 @@
+<html>
+    <head>
+        <title>Tron Effect</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script type="text/javascript" src="../thirdparty/require.js"></script>
+        <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="lib/dat.gui.js"></script>
+    </head>
+    <body>
+        <style>
+            body {
+                margin: 0;
+            }
+            #main {
+                background-color: #111;
+            }
+        </style>
+        <canvas id='main'></canvas>
+        <script type="text/javascript">
+            require(['qtek', 'text!./shader/tron.essl', 'js/createCompositor'], function (qtek, tronShader, createCompositor) {
+                var Shader = qtek.Shader;
+                Shader.import(tronShader);
+
+                var renderer = new qtek.Renderer({
+                    canvas : document.getElementById('main'),
+                    // devicePixelRatio: 1
+                });
+                renderer.resize(window.innerWidth, window.innerHeight);
+                var scene = new qtek.Scene();
+                var camera = new qtek.camera.Perspective({
+                    aspect : renderer.getViewportAspect(),
+                    far : 500
+                });
+
+                var cube = new qtek.geometry.Cube({
+                    widthSegments : 1,
+                    heightSegments : 1,
+                    depthSegments : 1
+                });
+
+                var tronMaterial = new qtek.Material({
+                    shader: new qtek.Shader({
+                        vertex: Shader.source('tron.vertex'),
+                        fragment: Shader.source('tron.fragment')
+                    })
+                });
+                tronMaterial.shader.define('fragment', 'RGBM_ENCODE');
+
+                camera.position.set(0, 0, 7);
+
+                var cubeMeshTronOutline = new qtek.Mesh({
+                    geometry: cube,
+                    material: tronMaterial,
+                    culling: false,
+                    beforeRender: function (_gl) {
+                        _gl.clear(_gl.DEPTH_BUFFER_BIT);
+                    }
+                });
+                var cubeMesh = new qtek.Mesh({
+                    geometry: cube,
+                    material: new qtek.Material({
+                        shader: qtek.shader.library.get('qtek.standard', {
+                            fragmentDefines: {
+                                RGBM_ENCODE: null
+                            }
+                        })
+                    })
+                });
+                cubeMeshTronOutline.scale.set(1.5, 1.5, 1.5);
+                cubeMesh.scale.set(1.5, 1.5, 1.5);
+
+                scene.add(cubeMesh);
+                scene.add(cubeMeshTronOutline);
+
+                var light = new qtek.light.Directional({
+                    intensity: 0.5
+                });
+                light.position.set(4, 5, 2);
+                light.lookAt(scene.position);
+                scene.add(light);
+
+                var animation = new qtek.animation.Animation();
+                animation.start();
+
+                var control = new qtek.plugin.OrbitControl({
+                    domElement: renderer.canvas,
+                    target: camera
+                });
+
+                var compositor = createCompositor({
+                    scene: scene,
+                    camera: camera,
+                    // enableBloom: false,
+                    enableLensflare: false
+                });
+
+                animation.on('frame', function(dTime) {
+                    compositor.render(renderer);
+                    // renderer.render(scene, camera);
+                    control.update(dTime);
+                });
+
+                var gui = new dat.GUI();
+                var config = {
+                    sharpness: 10.0,
+                    substraction: 0.2,
+                    strength: 50.0,
+                    bloomIntensity: 0.25
+                };
+                function updateTronMat() {
+                    tronMaterial.set('sharpness', config.sharpness);
+                    tronMaterial.set('substraction', config.substraction);
+                    tronMaterial.set('strength', config.strength);
+                }
+                function updateGlowMat() {
+                    var finalCompositeNode = compositor.getNodeByName('composite');
+                    finalCompositeNode.setParameter('bloomIntensity', config.bloomIntensity);
+                }
+                gui.add(config, 'sharpness', 0, 100).onChange(updateTronMat);
+                gui.add(config, 'substraction', 0, 1).onChange(updateTronMat);
+                gui.add(config, 'strength', 0, 200).onChange(updateTronMat);
+                gui.add(config, 'bloomIntensity', 0, 1).onChange(updateGlowMat);
+            });
+
+        </script>
+    </body>
+</html>

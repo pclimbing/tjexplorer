@@ -1,0 +1,102 @@
+@export qtek.basic.vertex
+
+uniform mat4 worldViewProjection : WORLDVIEWPROJECTION;
+
+uniform vec2 uvRepeat : [1.0, 1.0];
+uniform vec2 uvOffset : [0.0, 0.0];
+
+attribute vec2 texcoord : TEXCOORD_0;
+attribute vec3 position : POSITION;
+
+attribute vec3 barycentric;
+
+#ifdef SKINNING
+attribute vec3 weight : WEIGHT;
+attribute vec4 joint : JOINT;
+
+uniform mat4 skinMatrix[JOINT_COUNT] : SKIN_MATRIX;
+#endif
+
+varying vec2 v_Texcoord;
+varying vec3 v_Barycentric;
+
+void main()
+{
+    vec3 skinnedPosition = position;
+
+#ifdef SKINNING
+    @import qtek.chunk.skin_matrix
+
+    skinnedPosition = (skinMatrixWS * vec4(position, 1.0)).xyz;
+#endif
+
+    v_Texcoord = texcoord * uvRepeat + uvOffset;
+    v_Barycentric = barycentric;
+
+    gl_Position = worldViewProjection * vec4(skinnedPosition, 1.0);
+}
+
+@end
+
+
+
+
+@export qtek.basic.fragment
+
+varying vec2 v_Texcoord;
+uniform sampler2D diffuseMap;
+uniform vec3 color : [1.0, 1.0, 1.0];
+uniform vec3 emission : [0.0, 0.0, 0.0];
+uniform float alpha : 1.0;
+
+// Uniforms for wireframe
+uniform float lineWidth : 0.0;
+uniform vec3 lineColor : [0.0, 0.0, 0.0];
+varying vec3 v_Barycentric;
+
+@import qtek.util.edge_factor
+
+@import qtek.util.rgbm
+
+@import qtek.util.srgb
+
+void main()
+{
+
+#ifdef RENDER_TEXCOORD
+    gl_FragColor = vec4(v_Texcoord, 1.0, 1.0);
+    return;
+#endif
+
+    gl_FragColor = vec4(color, alpha);
+
+#ifdef DIFFUSEMAP_ENABLED
+    vec4 tex = decodeHDR(texture2D(diffuseMap, v_Texcoord));
+
+#ifdef SRGB_DECODE
+    tex = sRGBToLinear(tex);
+#endif
+
+#if defined(DIFFUSEMAP_ALPHA_ALPHA)
+    gl_FragColor.a = tex.a;
+#endif
+
+    gl_FragColor.rgb *= tex.rgb;
+#endif
+
+    gl_FragColor.rgb += emission;
+    if( lineWidth > 0.01)
+    {
+        gl_FragColor.rgb = gl_FragColor.rgb * mix(lineColor, vec3(1.0), edgeFactor(lineWidth));
+    }
+
+#ifdef GAMMA_ENCODE
+    // Not linear
+    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1 / 2.2));
+#endif
+
+    gl_FragColor = encodeHDR(gl_FragColor);
+
+}
+
+@end

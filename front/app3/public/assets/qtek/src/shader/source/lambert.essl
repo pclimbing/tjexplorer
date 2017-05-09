@@ -1,0 +1,248 @@
+/**
+ * http://en.wikipedia.org/wiki/Lambertian_reflectance
+ */
+
+@export qtek.lambert.vertex
+
+uniform mat4 worldViewProjection : WORLDVIEWPROJECTION;
+uniform mat4 worldInverseTranspose : WORLDINVERSETRANSPOSE;
+uniform mat4 world : WORLD;
+
+uniform vec2 uvRepeat : [1.0, 1.0];
+uniform vec2 uvOffset : [0.0, 0.0];
+
+attribute vec3 position : POSITION;
+attribute vec2 texcoord : TEXCOORD_0;
+attribute vec3 normal : NORMAL;
+
+attribute vec3 barycentric;
+
+#ifdef SKINNING
+attribute vec3 weight : WEIGHT;
+attribute vec4 joint : JOINT;
+
+uniform mat4 skinMatrix[JOINT_COUNT] : SKIN_MATRIX;
+#endif
+
+varying vec2 v_Texcoord;
+varying vec3 v_Normal;
+varying vec3 v_WorldPosition;
+varying vec3 v_Barycentric;
+
+void main()
+{
+
+    vec3 skinnedPosition = position;
+    vec3 skinnedNormal = normal;
+
+#ifdef SKINNING
+
+    @import qtek.chunk.skin_matrix
+
+    skinnedPosition = (skinMatrixWS * vec4(position, 1.0)).xyz;
+    // Upper 3x3 of skinMatrix is orthogonal
+    skinnedNormal = (skinMatrixWS * vec4(normal, 0.0)).xyz;
+#endif
+
+    gl_Position = worldViewProjection * vec4( skinnedPosition, 1.0 );
+
+    v_Texcoord = texcoord * uvRepeat + uvOffset;
+    v_Normal = normalize( ( worldInverseTranspose * vec4(skinnedNormal, 0.0) ).xyz );
+    v_WorldPosition = ( world * vec4( skinnedPosition, 1.0) ).xyz;
+
+    v_Barycentric = barycentric;
+}
+
+@end
+
+
+@export qtek.lambert.fragment
+
+varying vec2 v_Texcoord;
+varying vec3 v_Normal;
+varying vec3 v_WorldPosition;
+
+uniform sampler2D diffuseMap;
+uniform sampler2D alphaMap;
+
+uniform vec3 color : [1.0, 1.0, 1.0];
+uniform vec3 emission : [0.0, 0.0, 0.0];
+uniform float alpha : 1.0;
+
+// Uniforms for wireframe
+uniform float lineWidth : 0.0;
+uniform vec3 lineColor : [0.0, 0.0, 0.0];
+varying vec3 v_Barycentric;
+
+#ifdef AMBIENT_LIGHT_COUNT
+@import qtek.header.ambient_light
+#endif
+#ifdef POINT_LIGHT_COUNT
+@import qtek.header.point_light
+#endif
+#ifdef DIRECTIONAL_LIGHT_COUNT
+@import qtek.header.directional_light
+#endif
+#ifdef SPOT_LIGHT_COUNT
+@import qtek.header.spot_light
+#endif
+
+// Import util functions and uniforms needed
+@import qtek.util.calculate_attenuation
+
+@import qtek.util.edge_factor
+
+@import qtek.plugin.compute_shadow_map
+
+void main()
+{
+#ifdef RENDER_NORMAL
+    gl_FragColor = vec4(v_Normal * 0.5 + 0.5, 1.0);
+    return;
+#endif
+#ifdef RENDER_TEXCOORD
+    gl_FragColor = vec4(v_Texcoord, 1.0, 1.0);
+    return;
+#endif
+
+    gl_FragColor = vec4(color, alpha);
+
+#ifdef DIFFUSEMAP_ENABLED
+    vec4 tex = texture2D( diffuseMap, v_Texcoord );
+#ifdef SRGB_DECODE
+    tex.rgb = pow(tex.rgb, vec3(2.2));
+#endif
+    gl_FragColor.rgb *= tex.rgb;
+#ifdef DIFFUSEMAP_ALPHA_ALPHA
+    gl_FragColor.a *= tex.a;
+#endif
+#endif
+
+    vec3 diffuseColor = vec3(0.0, 0.0, 0.0);
+
+#ifdef AMBIENT_LIGHT_COUNT
+    for(int i = 0; i < AMBIENT_LIGHT_COUNT; i++)
+    {
+        diffuseColor += ambientLightColor[i];
+    }
+#endif
+// Compute point light color
+#ifdef POINT_LIGHT_COUNT
+#if defined(POINT_LIGHT_SHADOWMAP_COUNT)
+    float shadowContribsPoint[POINT_LIGHT_COUNT];
+    if( shadowEnabled )
+    {
+        computeShadowOfPointLights(v_WorldPosition, shadowContribsPoint);
+    }
+#endif
+    for(int i = 0; i < POINT_LIGHT_COUNT; i++)
+    {
+
+        vec3 lightPosition = pointLightPosition[i];
+        vec3 lightColor = pointLightColor[i];
+        float range = pointLightRange[i];
+
+        vec3 lightDirection = lightPosition - v_WorldPosition;
+
+        // Calculate point light attenuation
+        float dist = length(lightDirection);
+        float attenuation = lightAttenuation(dist, range);
+
+        // Normalize vectors
+        lightDirection /= dist;
+
+        float ndl = dot( v_Normal, lightDirection );
+
+        float shadowContrib = 1.0;
+#if defined(POINT_LIGHT_SHADOWMAP_COUNT)
+        if( shadowEnabled )
+        {
+            shadowContrib = shadowContribsPoint[i];
+        }
+#endif
+
+        diffuseColor += lightColor * clamp(ndl, 0.0, 1.0) * attenuation * shadowContrib;
+    }
+#endif
+#ifdef DIRECTIONAL_LIGHT_COUNT
+#if defined(DIRECTIONAL_LIGHT_SHADOWMAP_COUNT)
+    float shadowContribsDir[DIRECTIONAL_LIGHT_COUNT];
+    if(shadowEnabled)
+    {
+        computeShadowOfDirectionalLights(v_WorldPosition, shadowContribsDir);
+    }
+#endif
+    for(int i = 0; i < DIRECTIONAL_LIGHT_COUNT; i++)
+    {
+        vec3 lightDirection = -directionalLightDirection[i];
+        vec3 lightColor = directionalLightColor[i];
+
+        float ndl = dot(v_Normal, normalize(lightDirection));
+
+        float shadowContrib = 1.0;
+#if defined(DIRECTIONAL_LIGHT_SHADOWMAP_COUNT)
+        if( shadowEnabled )
+        {
+            shadowContrib = shadowContribsDir[i];
+        }
+#endif
+
+        diffuseColor += lightColor * clamp(ndl, 0.0, 1.0) * shadowContrib;
+    }
+#endif
+
+#ifdef SPOT_LIGHT_COUNT
+#if defined(SPOT_LIGHT_SHADOWMAP_COUNT)
+    float shadowContribsSpot[SPOT_LIGHT_COUNT];
+    if(shadowEnabled)
+    {
+        computeShadowOfSpotLights(v_WorldPosition, shadowContribsSpot);
+    }
+#endif
+    for(int i = 0; i < SPOT_LIGHT_COUNT; i++)
+    {
+        vec3 lightPosition = -spotLightPosition[i];
+        vec3 spotLightDirection = -normalize( spotLightDirection[i] );
+        vec3 lightColor = spotLightColor[i];
+        float range = spotLightRange[i];
+        float a = spotLightUmbraAngleCosine[i];
+        float b = spotLightPenumbraAngleCosine[i];
+        float falloffFactor = spotLightFalloffFactor[i];
+
+        vec3 lightDirection = lightPosition - v_WorldPosition;
+        // Calculate attenuation
+        float dist = length(lightDirection);
+        float attenuation = lightAttenuation(dist, range);
+
+        // Normalize light direction
+        lightDirection /= dist;
+        // Calculate spot light fall off
+        float c = dot(spotLightDirection, lightDirection);
+
+        float falloff;
+        falloff = clamp((c - a) /( b - a), 0.0, 1.0);
+        falloff = pow(falloff, falloffFactor);
+
+        float ndl = dot(v_Normal, lightDirection);
+        ndl = clamp(ndl, 0.0, 1.0);
+
+        float shadowContrib = 1.0;
+#if defined(SPOT_LIGHT_SHADOWMAP_COUNT)
+        if( shadowEnabled )
+        {
+            shadowContrib = shadowContribsSpot[i];
+        }
+#endif
+        diffuseColor += lightColor * ndl * attenuation * (1.0-falloff) * shadowContrib;
+    }
+#endif
+
+    gl_FragColor.rgb *= diffuseColor;
+    gl_FragColor.rgb += emission;
+    if(lineWidth > 0.01)
+    {
+        gl_FragColor.rgb = gl_FragColor.rgb * mix(lineColor, vec3(1.0), edgeFactor(lineWidth));
+    }
+}
+
+@end

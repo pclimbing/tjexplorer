@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+
+    <link rel="stylesheet" type="text/css" href="assets/DataTables-1.10.13/media/css/jquery.dataTables.css">
+     
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="assets/DataTables-1.10.13/media/js/jquery.js"></script>
+     
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="assets/DataTables-1.10.13/media/js/jquery.dataTables.js"></script>
+
+</head>
+<body>
+    <table id="channels" class="display">
+    <table id="blcoks" class="display">
+    <table id="transactions" class="display">
+
+    <!-- 
+    <div id="chart1" style="width: 600px;height:400px;"></div>
+    <div id="chart2" style="width: 600px;height:400px;"></div> -->
+
+
+</table>
+
+    <script>
+
+
+        jQuery(document).ready(function($)
+        {   
+            //the code to change text
+            // $.get("http://10.15.190.230:10010/blocks",function(datac,status){
+            $.get("http://10.15.190.230:10010/blocks",function(datab,status){
+              //alert("Data: " + data + "\nStatus: " + status);
+               $.get("http://10.15.190.230:10010/transactions",function(datat,status){
+              // //alert("Data: " + data + "\nStatus: " + status);
+              //     console.log(datab, status)
+                  // $("#chart1").text(datab);
+               //    $("#chart2").text(datat);
+               // });
+
+                    dataSetb = datab.split('|')
+                        for(j = 0; j < dataSetb.length; j++) {
+                            dataSetb[j] = dataSetb[j].split(',')
+                        } 
+                      console.log(dataSetb)
+
+                        $(document).ready(function() {
+                            $('#blcoks').DataTable( {
+                                 data: dataSetb,
+                                    columns: [
+                                        { title: "块高度" },
+                                        { title: "前一块哈希" },
+                                        { title: "数据哈希" }
+                                    ]
+                        });
+                    });
+
+                    dataSett = datat.split('|')
+                        for(j = 0; j < dataSett.length; j++) {
+                            dataSett[j] = dataSett[j].split(',')
+                        } 
+                      console.log(dataSett)
+
+                        $(document).ready(function() {
+                            $('#transactions').DataTable( {
+                                 data: dataSett,
+                                    columns: [
+                                        { title: "交易号" },
+                                        { title: "交易类型" },
+                                        { title: "交易时间" },
+                                        { title: "智能合约名" },
+                                        { title: "通道名" },
+                                        { title: "所属区块" }
+
+                                    ]
+                        });
+                    });
+                });
+            }) //get blocks end
+
+
+
+        }) //jquery end
+
+// var dataSet = [
+//     [ "Tiger Nixon", "System Architect", "Edinburgh", "5421", "2011/04/25", "$320,800" ],
+//     [ "Garrett Winters", "Accountant", "Tokyo", "8422", "2011/07/25", "$170,750" ],
+//     [ "Ashton Cox", "Junior Technical Author", "San Francisco", "1562", "2009/01/12", "$86,000" ],
+//     [ "Cedric Kelly", "Senior Javascript Developer", "Edinburgh", "6224", "2012/03/29", "$433,060" ],
+//     [ "Airi Satou", "Accountant", "Tokyo", "5407", "2008/11/28", "$162,700" ],
+//     [ "Brielle Williamson", "Integration Specialist", "New York", "4804", "2012/12/02", "$372,000" ],
+//     [ "Herrod Chandler", "Sales Assistant", "San Francisco", "9608", "2012/08/06", "$137,500" ],
+//     [ "Rhona Davidson", "Integration Specialist", "Tokyo", "6200", "2010/10/14", "$327,900" ],
+// ];
+
+
+
+    </script>
+</body>
+</html>
