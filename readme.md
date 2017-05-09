@@ -1,4 +1,4 @@
-# start the monitor
+# Start
 
 ## 1. start mysql swagger api
 ```
@@ -13,9 +13,7 @@ cd front/app4
 ```
 
 
-# Appendix
-
-mysql tables
+# MYSQL
 ```
 #通道
 create table channels(
