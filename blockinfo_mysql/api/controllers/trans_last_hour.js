@@ -56,7 +56,7 @@ function trans_last_hour(req, res) {
   // var name = req.swagger.params.name.value || 'stranger';
   //var hello = util.format('Blocks: 9');
   //onnection.connect();
-  connection.query('SELECT   count(*) from(SELECT timestamp  FROM transactions WHERE timestamp > DATE_SUB(NOW(), INTERVAL 60 day)) as hour',
+  connection.query('SELECT   count(*) from(SELECT timestamp  FROM transactions WHERE timestamp > DATE_SUB(NOW(), INTERVAL 1 day)) as hour',
    function(err, rows, fields) {
       if (err) throw err;
     //console.log('The solution is: ', rows[0].solution);
