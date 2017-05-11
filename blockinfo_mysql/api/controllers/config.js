@@ -1,9 +1,10 @@
 
 var a={
-  host     : '127.0.0.1',
+  host     : '10.213.33.174',
+  port     : '13306',
   user     : 'root',
   password : '123456',
-  database : 'test1'
+  database : 'test'
 }
 
 
