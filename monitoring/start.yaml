@@ -1,0 +1,115 @@
+FABRIC_NET_CONFIG=./net_internal.yaml  docker-compose up
+
+iptables -t nat -L -n
+
+
+version: '2'
+
+services:
+  monitoring:
+    container_name: blockchain-monitoring
+    image: blockchainmonitoring/blockchain-monitoring:latest
+    volumes:
+      - $FABRIC_NET_CONFIG:/etc/conf/net-config.yaml
+    ports:  
+      - "3000:3000"
+      - "8086:8086"
+
+
+
+
+organisations:
+- name: 'org1'
+  ca:
+    name: 'ca_peerOrg1'
+    address: 'http://10.15.190.85:7054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org1MSP'
+  peers:
+    - name: 'peer0.org1.example.com'
+      address: 'grpc://10.15.190.85:7051'
+
+- name: 'org2'
+  ca:
+    name: 'ca_peerOrg2'
+    address: 'http://10.15.190.85:8054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org2MSP'
+  peers:
+    - name: 'peer0.org2.example.com'
+      address: 'grpc://10.15.190.85:8051'
+
+
+
+
+172.19.0.2:7054
+
+172.19.0.7:7051
+
+172.19.0.4:7054
+
+172.19.0.6:7051
+organisations:
+- name: 'org1'
+  ca:
+    name: 'ca_peerOrg1'
+    address: 'http://172.19.0.2:7054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org1MSP'
+  peers:
+    - name: 'peer0.org1.example.com'
+      address: 'grpc://172.19.0.7:7051'
+
+- name: 'org2'
+  ca:
+    name: 'ca_peerOrg2'
+    address: 'http://172.19.0.4:7054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org2MSP'
+  peers:
+    - name: 'peer0.org2.example.com'
+      address: 'grpc://172.19.0.6:7051'
+
+
+
+organisations:
+- name: 'org1'
+  ca:
+    name: 'ca_peerOrg1'
+    address: 'http://172.18.0.2:7054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org1MSP'
+  peers:
+    - name: 'peer0.org1.example.com'
+      address: 'grpc://172.18.0.7:7051'
+
+- name: 'org2'
+  ca:
+    name: 'ca_peerOrg2'
+    address: 'http://172.18.0.3:7054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org2MSP'
+  peers:
+    - name: 'peer0.org2.example.com'
+      address: 'grpc://172.18.0.6:7051'
+
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:7054 to:172.18.0.2:7054
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8054 to:172.18.0.3:7054
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:7050 to:172.18.0.4:7050
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:5984 to:172.18.0.5:5984
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8053 to:172.18.0.6:7053
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8051 to:172.18.0.6:7051
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:7053 to:172.18.0.7:7053
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:7051 to:172.18.0.7:7051
