@@ -1,6 +1,9 @@
 # Intro
 This project retrive information(blocks, transactions, etc) from a hyperledger-fabric network, save  into mysql, then show in a web.
 
+![image](http://github.com/pclimbing/tjexplorer/raw/master/tmp/readme_images/1.png)
+![image](http://github.com/pclimbing/tjexplorer/raw/master/tmp/readme_images/2.png)
+
 # Start the project
 ## 1. get data
 Crearte mysql tables according to below. Use fabric-sdk-go(or whatever) to get information from fabric network(like chain.QueryInfo() in fabric-sdk-go), save into mysql. This could be set to work regularly.
@@ -20,7 +23,11 @@ cd front/app4
 vim ./public/docs/demo.min.js  //set swagger urls accordingly, eg. http://10.15.190.85:10010/trans_last_hour
 ./iniS
 ```
-
+## 4. view the web
+In the browser,
+```
+http://127.0.0.1:3000/docs/demo.html
+```
 
 # MYSQL tables
 ```
