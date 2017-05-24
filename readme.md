@@ -1,8 +1,8 @@
 # Intro
 This project retrive information(blocks, transactions, etc) from a hyperledger-fabric network, save  into mysql, then show in a web.
 
-![image](https://github.com/pclimbing/tjexplorer/tmp/readme_images/1.png)
-![image](https://github.com/pclimbing/tjexplorer/tmp/readme_images/2.png)
+![image](https://github.com/pclimbing/tjexplorer/master/tmp/readme_images/1.png)
+![image](https://github.com/pclimbing/tjexplorer/master/tmp/readme_images/2.png)
 
 # Start the project
 ## 1. get data
