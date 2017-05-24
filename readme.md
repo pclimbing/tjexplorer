@@ -1,19 +1,23 @@
-# Start
+# Intro
+This project retrive information(blocks, transactions, etc) from a hyperledger-fabric network, save  into mysql, show in a web.
 
+# Start the project
 ## 1. start mysql swagger api
 ```
 cd blockinfo_mysql
+vim ./api/controllers/config.js    //set mysql url accordingly
 swagger roject start
 ```
 
 ## 2. start front end
 ```
 cd front/app4
+vim ./public/docs/demo.min.js  //set swagger urls accordingly, eg. http://10.15.190.85:10010/trans_last_hour
 ./iniS
 ```
 
 
-# MYSQL
+# MYSQL tables
 ```
 #通道
 create table channels(
