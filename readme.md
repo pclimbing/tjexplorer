@@ -1,15 +1,20 @@
 # Intro
-This project retrive information(blocks, transactions, etc) from a hyperledger-fabric network, save  into mysql, show in a web.
+This project retrive information(blocks, transactions, etc) from a hyperledger-fabric network, save  into mysql, then show in a web.
 
 # Start the project
-## 1. start mysql swagger api
+## 1. get data
+Use fabric-sdk-go(or whatever) to get information from fabric network(like chain.QueryInfo() in fabric-sdk-go), save into mysql. This could be set to work regularly.
+
+## 2. start mysql swagger api
+This program responses to swagger requests, get the data in mysql and response.
 ```
 cd blockinfo_mysql
 vim ./api/controllers/config.js    //set mysql url accordingly
 swagger roject start
 ```
 
-## 2. start front end
+## 3. start front end
+This is the web, echarts and dataTable are used.
 ```
 cd front/app4
 vim ./public/docs/demo.min.js  //set swagger urls accordingly, eg. http://10.15.190.85:10010/trans_last_hour
