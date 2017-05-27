@@ -1,0 +1,108 @@
+FABRIC_NET_CONFIG=./net_go_withoutch.yaml  docker-compose up
+FABRIC_NET_CONFIG=./net_go.yaml  docker-compose up
+
+
+
+FABRIC_CA_FIXTURE_TAG=x86_64-1.0.0-alpha
+FABRIC_ORDERER_FIXTURE_TAG=x86_64-1.0.0-alpha
+FABRIC_PEER_FIXTURE_TAG=x86_64-1.0.0-alpha
+FABRIC_PEER_FIXTURE_TAG=x86_64-1.0.0-alpha
+FABRIC_BUILDER_FIXTURE_TAG=x86_64-1.0.0-alpha
+
+
+FABRIC_CA_FIXTURE_TAG=x86_64-1.0.0-alpha
+FABRIC_ORDERER_FIXTURE_TAG=0419
+FABRIC_PEER_FIXTURE_TAG=0419
+FABRIC_PEER_FIXTURE_TAG=0419
+FABRIC_BUILDER_FIXTURE_TAG=0419
+
+
+
+
+
+organisations:
+- name: 'Org0'
+  ca:
+    name: 'ca_peerOrg1'
+    address: 'http://172.26.127.140:7054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org1MSP'
+  peers:
+    - name: 'peer0'
+      address: 'grpc://172.26.127.140:7051'
+    - name: 'peer1'
+      address: 'grpc://172.26.127.140:7056'
+
+- name: 'Org1'
+  ca:
+    name: 'ca_peerOrg1'
+    address: 'http://172.26.127.140:8054'
+  enroll:
+    login: 'admin'
+    pass: 'adminpw'
+    msp: 'Org2MSP'
+  peers:
+    - name: 'peer2'
+      address: 'grpc://172.26.127.140:8051'
+    - name: 'peer3'
+      address: 'grpc://172.26.127.140:8056'
+
+
+channels:
+- name: 'testchannel'
+  msp:
+  - 'Org1MSP'
+  - 'Org2MSP'
+
+  orderers:
+  - name: 'orderer0'
+    msp:
+    - 'Org1MSP'
+    - 'Org2MSP'
+    address: 'grpc://172.26.127.140:7050'
+
+
+  endorsers:
+  - name: 'peer0'
+    msp: 'Org1MSP'
+    address: 'grpc://172.26.127.140:7051'
+
+  - name: 'peer1'
+    msp: 'Org1MSP'
+    address: 'grpc://172.26.127.140:7056'
+
+  - name: 'peer2'
+    msp: 'Org2MSP'
+    address: 'grpc://172.26.127.140:8051'
+
+  - name: 'peer3'
+    msp: 'Org2MSP'
+    address: 'grpc://172.26.127.140:8056'
+
+  events:
+  - name: 'ev-peer-0'
+    msp: 'Org1MSP'
+    address: 'grpc://172.26.127.140:7053'
+
+  - name: 'ev-peer-1'
+    msp: 'Org1MSP'
+    address: 'grpc://172.26.127.140:7058'
+
+  - name: 'ev-peer-2'
+    msp: 'Org2MSP'
+    address: 'grpc://172.26.127.140:8053'
+
+  - name: 'ev-peer-3'
+    msp: 'Org2MSP'
+    address: 'grpc://172.26.127.140:8058'
+
+  # chaincodes:
+  # # - name: '51hsih2lnx'
+  # #   path: 'github.com/example_cc'
+  # #   version: 'v0'
+  # - name: 'install'
+  #   path: 'github.com/example_cc'
+  #   version: 'v05571203'
+

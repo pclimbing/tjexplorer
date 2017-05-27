@@ -1,5 +1,10 @@
 FABRIC_NET_CONFIG=./net_internal.yaml  docker-compose up
 
+
+
+FABRIC_NET_CONFIG=./net.yaml  docker-compose up
+
+
 iptables -t nat -L -n
 
 
