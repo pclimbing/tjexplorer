@@ -1,0 +1,20 @@
+table `channels` already exists, skip
+table `blocks` already exists, skip
+table `transactions` already exists, skip
+2017/05/05 09:31:23 Using config file: /app/go/src/nbizexplore/fixtures/config/config_test.yaml
+2017/05/05 09:31:23 http://10.214.129.132:8090
+2017/05/05 09:31:23 fabric_sdk_go Logging level: info
+[36m09:31:23.969 [SW_BCCSP] DEBU : [0m KeyStore opened at [/tmp/keystore]...done
+[36m09:31:23.969 [BCCSP_FACTORY] DEBU : [0m Initialize BCCSP [SW]
+09:31:23.969 [fabric_sdk_go] INFO : [0m KeyStore path [/tmp/enroll_user] missing [false]: [%!s(<nil>)]
+[36m09:31:23.969 [SW_BCCSP] DEBU : [0m Loading private key [3fda088b0c0f02651be0507476541730c641d7969d3e0b7f67ad1bbc7fcbdde6] at [/tmp/keystore/3fda088b0c0f02651be0507476541730c641d7969d3e0b7f67ad1bbc7fcbdde6_sk]...
+09:31:23.986 [fabric_sdk_go] INFO : [0m Constructed Chain instance: &{nbizchannel true map[] 200 map[] 0xc820252400 <nil> 0xc82024bfa0 []}
+[36m09:31:24.001 [msp] DEBU : [0m Creating BCCSP-based MSP instance
+[36m09:31:24.001 [msp] DEBU : [0m Setting up MSP instance Org0MSP
+[36m09:31:24.001 [msp] DEBU : [0m Creating identity instance for ID &{Org0MSP IDENTITY}
+[36m09:31:24.001 [msp] DEBU : [0m Creating identity instance for ID &{Org0MSP IDENTITY}
+[36m09:31:24.001 [msp] DEBU : [0m Setting up the MSP manager (1 msps)
+[36m09:31:24.001 [msp] DEBU : [0m MSP manager setup complete, setup 1 msps
+******* EventHub connect to peer (10.214.129.132:8053) *******
+PreviousHeight: 3538 *****CurrentHeight: 3538
+No New Block

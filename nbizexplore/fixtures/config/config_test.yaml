@@ -1,0 +1,57 @@
+client:
+ peers:
+  peer1:
+    host: "10.214.129.132"
+    port: 8051
+    event_host: "10.214.129.132"
+    event_port: 8053
+    primary: true
+    tls:
+      # Certificate location absolute path
+      certificate: "$GOPATH/src/nbizexplore/fixtures/tls/peers/peer0/ca-cert.pem"
+      serverHostOverride: "peer0"
+
+#  peer2:
+#    host: "localhost"
+#    port: 8051
+#    primary: false
+#    tls:
+#      # Certificate location absolute path
+#      certificate: "$GOPATH/src/github.com/hyperledger/fabric-sdk-go/test/fixtures/tls/peers/peer1/ca-cert.pem"
+#      serverHostOverride: "peer1"
+
+ tls:
+  enabled: false
+
+ security:
+  enabled: true
+  hashAlgorithm: "SHA2"
+  level: 256
+
+ tcert:
+  batch:
+    size: 200
+
+ orderer:
+  host: "10.214.129.132"
+  port: 8050
+  tls:
+    # Certificate location absolute path
+    certificate: "$GOPATH/src/nbizexplore/fixtures/tls/orderer/ca-cert.pem"
+    serverHostOverride: "orderer0"
+
+ logging:
+  level: info
+
+ fabricCA:
+  tlsEnabled: false
+  id: "Org0MSP"
+  serverURL: "http://10.214.129.132:8090"
+  certfiles :
+    - "$GOPATH/src/nbizexplore/fixtures/root.pem"
+  client:
+   keyfile: "$GOPATH/src/nbizexplore/fixtures/tls_client-key.pem"
+   certfile: "$GOPATH/src/nbizexplore/fixtures/tls_client-cert.pem"
+
+ keystore:
+  path: "/tmp/keystore"
