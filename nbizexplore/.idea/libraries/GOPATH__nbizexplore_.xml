@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="GOPATH &lt;nbizexplore&gt;">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../github.com" />
-      <root url="file://$PROJECT_DIR$/../testapi" />
+      <root url="file://$USER_HOME$/mygo/src/github.com" />
+      <root url="file://$USER_HOME$/mygo/src/test" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/../github.com" />
-      <root url="file://$PROJECT_DIR$/../testapi" />
+      <root url="file://$USER_HOME$/mygo/src/github.com" />
+      <root url="file://$USER_HOME$/mygo/src/test" />
     </SOURCES>
     <excluded>
       <root url="file://$PROJECT_DIR$" />
