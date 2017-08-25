@@ -1,0 +1,8 @@
+RowDataPacket {
+  tx_i_d: <Buffer 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ... >,
+  type: '1',
+  timestamp: '2017/08/25 14:45:09.',
+  chaincode_name: 'nbizcc',
+  channel_name: 'nbizchannel',
+  number: 0 }
+RowDataPacket { type: '1', 'count(*)': 1 }

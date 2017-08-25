@@ -1,0 +1,28 @@
+
+> app@0.0.0 start /root/tjexplorer/front/app4
+> node ./bin/www
+
+Fri, 25 Aug 2017 07:34:29 GMT app:server Listening on port 10011
+[0mGET /docs/demo.html [32m200 [0m17.322 ms - 6901[0m
+[0mGET /dist/DataTables-1.10.13/media/css/jquery.dataTables.css [36m304 [0m10.805 ms - -[0m
+[0mGET /docs/demo.css [36m304 [0m11.365 ms - -[0m
+[0mGET /fonts/fontawesome-webfont.woff2?v=4.5.0 [36m304 [0m10.186 ms - -[0m
+[0mGET /dist/jquery.min.js [36m304 [0m10.056 ms - -[0m
+[0mGET /docs/demo.min.js [32m200 [0m0.968 ms - 13513[0m
+[0mGET /dist/amazeui.min.js [36m304 [0m0.461 ms - -[0m
+[0mGET /dist/t3.min.js [36m304 [0m0.173 ms - -[0m
+[0mGET /dist/echarts.min.js [36m304 [0m0.307 ms - -[0m
+[0mGET /dist/amazeui.min.css [36m304 [0m0.175 ms - -[0m
+[0mGET /docs/demo.css [36m304 [0m0.212 ms - -[0m
+[0mGET /dist/amazeui.min.css [36m304 [0m0.245 ms - -[0m
+[0mGET /dist/DataTables-1.10.13/media/js/jquery.dataTables.js [36m304 [0m0.202 ms - -[0m
+[0mGET /dist/i/favicon.png [36m304 [0m0.221 ms - -[0m
+[0mGET /dist/jquery.min.js [36m304 [0m0.719 ms - -[0m
+[0mGET /dist/amazeui.min.js [36m304 [0m0.393 ms - -[0m
+[0mGET /dist/DataTables-1.10.13/media/css/jquery.dataTables.css [36m304 [0m0.515 ms - -[0m
+[0mGET /dist/t3.min.js [36m304 [0m0.605 ms - -[0m
+[0mGET /dist/DataTables-1.10.13/media/js/jquery.dataTables.js [36m304 [0m0.304 ms - -[0m
+[0mGET /dist/echarts.min.js [36m304 [0m0.253 ms - -[0m
+[0mGET /docs/demo.min.js [32m200 [0m0.440 ms - 13513[0m
+[0mGET /fonts/fontawesome-webfont.woff2?v=4.5.0 [36m304 [0m0.184 ms - -[0m
+./iniS: 行 2: 25860 已终止               DEBUG=app:* npm start
